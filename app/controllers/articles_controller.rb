@@ -1,18 +1,21 @@
 class ArticlesController < ApplicationController
   include ArticlesHelper
-  before_action :set_article, only: [:show, :new, :edit, :create, :update, :destroy]
+  before_action :set_article, only: [:show, :new, :edit, :create, :update]
 
   # GET /articles
   # GET /articles.json
   def index
-    @articles = Article.all
+    @articles = get_articles_list
   end
 
   # GET /articles/1
   # GET /articles/1.json
   def show
     @article = @parent_article
-    #@TODO 404
+    if @article.nil?
+      raise ActionController::RoutingError.new('Not Found')
+    end
+    @articles = get_articles_list(@article)
   end
 
   # GET /articles/new
@@ -30,13 +33,13 @@ class ArticlesController < ApplicationController
   def create
     @article = Article.new(article_params)
     if @parent_article
-      @article.slug_full = @parent_article.slug_full + '/' + @article.slug
+      @article.prepand_to(@parent_article)
     else
-      @article.slug_full = @article.slug
+      @article.make_root
     end
     respond_to do |format|
       if @article.save
-        format.html { redirect_to article_url(@article), notice: 'Article was successfully created.' }
+        format.html { redirect_to URI.encode(article_url(@article)), notice: 'Article was successfully created.' }
         format.json { render :show, status: :created, location: @article }
       else
         format.html { render :new }
@@ -51,13 +54,8 @@ class ArticlesController < ApplicationController
     @article = @parent_article
     respond_to do |format|
       params = article_params
-      if @article.slug == @article.slug_full
-        params[:slug_full] = params[:slug]
-      else
-        params[:slug_full] = parent_article_slug(@article) + '/' + params[:slug]
-      end
       if @article.update(params)
-        format.html { redirect_to article_url(@article), notice: 'Article was successfully updated.' }
+        format.html { redirect_to URI.encode(article_url(@article)), notice: 'Article was successfully updated.' }
         format.json { render :show, status: :ok, location: @article }
       else
         format.html { render :edit }
@@ -66,16 +64,6 @@ class ArticlesController < ApplicationController
     end
   end
 
-  # DELETE /articles/1
-  # DELETE /articles/1.json
-  def destroy
-    @article = @parent_article
-    @article.destroy
-    respond_to do |format|
-      format.html { redirect_to article_url(@article), notice: 'Article was successfully destroyed.' }
-      format.json { head :no_content }
-    end
-  end
 
   private
   # Use callbacks to share common setup or constraints between actions.

@@ -1,0 +1,19 @@
+<div class="list">
+  <% level = 0 %>
+  <% @articles.each do |article| %>
+      <% if level < article.level %>
+          <% level = article.level %>
+          <ul>
+      <% elsif level > article.level %>
+          <% while level > article.level %>
+              <% level = level - 1 %>
+              </ul>
+          <% end %>
+      <% end %>
+      <li><a href=<%= article_path(article) %>><%= article.title %></a></li>
+  <% end %>
+  <% while level > 0 %>
+      <% level = level - 1 %>
+      </ul>
+  <% end %>
+</div>

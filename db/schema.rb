@@ -14,13 +14,15 @@
 ActiveRecord::Schema.define(version: 20160212154930) do
 
   create_table "articles", force: :cascade do |t|
-    t.string   "slug",       limit: 255
-    t.string   "slug_full",  limit: 255
-    t.string   "title",      limit: 255
-    t.string   "text",       limit: 255
-    t.string   "text_html",  limit: 255
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.integer  "level",      limit: 4
+    t.integer  "parent_id",  limit: 4
+    t.text     "slug",       limit: 65535
+    t.text     "slug_full",  limit: 65535
+    t.text     "title",      limit: 65535
+    t.text     "text",       limit: 65535
+    t.text     "text_html",  limit: 65535
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
   end
 
 end
