@@ -1,11 +1,11 @@
 Rails.application.routes.draw do
   root  'articles#index'
-  match '/*', to: 'articles#show', via: 'get'
-  match '/*', to: 'articles#create', via: 'post'
-  match '/*', to: 'articles#edit', via: 'patch'
-  match '/*', to: 'articles#delete', via: 'delete'
-  match '/*/add', to: 'articles#new', via: 'get'
-  match '/*/edit', to: 'articles#edit', via: 'get'
+  match '/:slug/add', to: 'articles#new', constraints: { slug: /.*/ }, via: 'get'
+  match '/:slug/edit', to: 'articles#edit', constraints: { slug: /.*/ }, via: 'get'
+  match '/:slug', to: 'articles#show', constraints: { slug: /.*/ }, via: 'get'
+  match '/:slug', to: 'articles#create', constraints: { slug: /.*/ }, via: 'post'
+  match '/:slug', to: 'articles#update', constraints: { slug: /.*/ }, via: 'patch'
+  match '/:slug', to: 'articles#delete', constraints: { slug: /.*/ }, via: 'delete'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
